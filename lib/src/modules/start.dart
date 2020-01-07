@@ -40,11 +40,9 @@ int stateCLIOptions(String title, List<String> options) {
     }
 
     print('\nUse ↑↓ (keyboard arrows)');
-    print('Pressed \'q\' to quit.');
+    print('Press \'q\' to quit.');
 
     var key = console.readKey();
-
-    print('key: ${key}');
 
     if (key.controlChar == ControlCharacter.arrowDown) {
       if (selected < options.length - 1) {
@@ -92,7 +90,7 @@ Function selecStateManagement([int selected, String directory]) {
   selected ??= stateCLIOptions('Choose a state manager', [
     'mobx (default)',
     'flutter_bloc',
-    'default BLoC with rxdart',
+    'BLoC with rxdart',
   ]);
 
   if (selected == -1) {
@@ -128,11 +126,9 @@ Future isContinue(Directory dir, [int selected]) async {
       selected = stateCLIOptions(
           'This command will delete everything inside the \"lib /\" and \"test\" folders.',
           [
-            '1 - No',
-            '2 - Yes',
+            'No',
+            'Yes',
           ]);
-          
-          print(selected);
 
       if (selected == 1) {
         output.msg("Removing lib folder");
@@ -166,6 +162,7 @@ Future start(completeStart,
   var command =
       CommandRunner("slidy", "CLI package manager and template for Flutter.");
   command.addCommand(GenerateCommand());
+
   var package = await getNamePackage(dir.parent);
   var m = await isModular();
   createStaticFile('${dir.path}/main.dart',
@@ -209,6 +206,7 @@ Future start(completeStart,
 
     await command.run(['generate', 'module', 'modules/home', '-c']);
   }
+
   await command.run(['generate', 'bloc', 'app']);
 
   output.msg("Project started! enjoy!");

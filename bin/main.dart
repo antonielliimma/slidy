@@ -4,7 +4,6 @@ import 'package:slidy/slidy.dart';
 import 'package:slidy/src/command/run_command.dart';
 
 void main(List<String> arguments) {
-  
   final runner = configureCommand(arguments);
 
   var hasCommand = runner.commands.keys.any((x) => arguments.contains(x));
