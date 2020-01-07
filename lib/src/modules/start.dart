@@ -39,7 +39,8 @@ int stateCLIOptions(String title, List<String> options) {
       }
     }
 
-    print('\nPressed \'q\' to quit.');
+    print('\nUse ↑↓ (keyboard arrows)');
+    print('Pressed \'q\' to quit.');
 
     var key = console.readKey();
 
@@ -65,9 +66,13 @@ int stateCLIOptions(String title, List<String> options) {
 
 Function blocOrModular([int selected, String directory]) {
   selected ??= stateCLIOptions('What Provider System do you want to use?', [
-    '1 - bloc_pattern (default)',
-    '2 - flutter_modular',
+    'bloc_pattern (default)',
+    'flutter_modular',
   ]);
+
+  if (selected == -1) {
+    exit(1);
+  }
 
   return () async {
     await removeAllPackages(directory);
@@ -85,12 +90,17 @@ Function blocOrModular([int selected, String directory]) {
 
 Function selecStateManagement([int selected, String directory]) {
   selected ??= stateCLIOptions('Choose a state manager', [
-    '1 - default BLoC with rxdart',
-    '2 - flutter_bloc',
-    '3 - mobx',
+    'mobx (default)',
+    'flutter_bloc',
+    'default BLoC with rxdart',
   ]);
+
+  if (selected == -1) {
+    exit(1);
+  }
+
   return () async {
-    if (selected == 0) {
+    if (selected == 2) {
       output.title("Starting a new project with RX BLoC");
       await install(["rxdart"], false, directory: directory);
     } else if (selected == 1) {
@@ -98,7 +108,7 @@ Function selecStateManagement([int selected, String directory]) {
       await createBlocBuilder();
       await install(["bloc", 'bloc_test', 'equatable'], false,
           directory: directory);
-    } else if (selected == 2) {
+    } else if (selected == 0) {
       output.title("Starting a new project with Mobx");
       await install(["mobx", 'flutter_mobx'], false, directory: directory);
       await install(["build_runner", "mobx_codegen"], true,
@@ -107,8 +117,8 @@ Function selecStateManagement([int selected, String directory]) {
       exit(1);
     }
 
-    await install(["dio"], false, directory: directory);
-    await install(["mockito"], true, directory: directory);
+    await install(['dio'], false, directory: directory);
+    await install(['mockito'], true, directory: directory);
   };
 }
 
@@ -128,7 +138,7 @@ Future isContinue(Directory dir, [int selected]) async {
         output.msg("Removing lib folder");
         await dir.delete(recursive: true);
       } else {
-        output.error("The lib folder must be empty");
+        output.error('The lib folder must be empty');
         exit(1);
       }
     }
@@ -139,7 +149,7 @@ Future start(completeStart,
     [bool isCreate = false,
     Directory dir,
     Tuple2<Function, Function> tuple]) async {
-  dir ??= Directory("lib");
+  dir ??= Directory('lib');
   tuple ??= Tuple2(blocOrModular(), selecStateManagement());
   await isContinue(dir, isCreate ? 1 : null);
   await tuple.item1();
